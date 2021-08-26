@@ -1,4 +1,5 @@
 from selenium import webdriver
+import datetime
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -17,10 +18,12 @@ day_input = driver.find_element_by_xpath('/html/body/div/main/div[2]/div/form/di
 month_input = driver.find_element_by_xpath('/html/body/div/main/div[2]/div/form/div/fieldset/div[1]/div[2]/div/input')
 year_input = driver.find_element_by_xpath('/html/body/div/main/div[2]/div/form/div/fieldset/div[1]/div[3]/div/input')
 
+start_date = datetime.date(2021, 11, 4)  # this is for later
+end_date = start_date + datetime.timedelta(days=20)
 
-day_input.send_keys('11')
-month_input.send_keys('11')
-year_input.send_keys('2021')
+day_input.send_keys(f'{start_date.day}')
+month_input.send_keys(f'{start_date.month}')
+year_input.send_keys(f'{start_date.year}')
 
 continue_button1 = driver.find_element_by_xpath('/html/body/div/main/div[2]/div/form/button')
 webdriver.ActionChains(driver).move_to_element(continue_button1).click().perform()
@@ -84,7 +87,20 @@ webdriver.ActionChains(driver).move_to_element(continue7).click().perform()
 # new page
 
 test_centres_url = driver.current_url
-new_url = test_centres_url + 'numberOfResults=50&distanceUom=miles'
+new_url = test_centres_url + '?numberOfResults=50&distanceUom=miles'
+driver.get(new_url)
 
+# new page
 
+test_centres_select_button_list = []
+for i in range(1, 51):
+    test_centres_select_button_list.append(driver.find_element_by_xpath('/html/body/div[1]/main/div[4]/div[1]/div[2]/'
+                                                                        'div/div/form/fieldset/'
+                                                                        f'div[{i}]/div[3]/div/button'))
 
+for test_center_select_button in test_centres_select_button_list:
+    webdriver.ActionChains(driver).move_to_element(test_center_select_button).click().perform()
+    continue8 = driver.find_element_by_xpath('/html/body/div/main/div[2]/div/form/button')
+    webdriver.ActionChains(driver).move_to_element(continue8).click().perform()
+    button1 = driver.find_element_by_class_name('govuk-button govuk-button--secondary')
+    print(button1)
